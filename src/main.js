@@ -3,7 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import UiNuclear from '@oneitfarm/ui-nuclear'
+import '@oneitfarm/ui-nuclear/dist/main.css'
 
+Vue.use(UiNuclear)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
