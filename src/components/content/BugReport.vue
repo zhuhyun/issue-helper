@@ -1,0 +1,116 @@
+<template>
+  <div class="bug-report">
+    <Row type="flex" justify="space-between">
+      <Col span="11">
+        <p class="version-tit">{{$t('bugReport.version')}}</p>
+        <Select v-model="bugInfo.curVersion" style="width:100%">
+          <Option v-for="item in version" :value="item" :key="item">{{ item }}</Option>
+        </Select>
+        <p class="form-explain">{{$t('bugReport.versionSubtitle')}}</p>
+      </Col>
+      <Col span="11" >
+        <p class="form-title-required">{{$t('bugReport.reTitle')}}</p>
+        <Input v-model="bugInfo.reviewLink" placeholder="Enter something..." />
+        <p class="form-explain" v-html="bugI18n.reSubtitle"></p>
+        <p class="review"><a @click="show = true">{{$t('bugReport.review')}}</a></p>
+        <Modal v-model="show" width="720">
+          <p slot="header" style="font-size: 20px">
+            <span>{{$t('bugReport.modalTitle')}}</span>
+          </p>
+          <div v-html="review" style="font-size: 16px">
+          </div>
+          <div slot="footer">
+          </div>
+        </Modal>
+      </Col>
+    </Row>
+    <Form>
+      <FormItem class="form-title">
+        <p class="form-title-required">{{$t('bugReport.envir')}}</p>
+        <Input placeholder="Enter something..." v-model="bugInfo.environment"/>
+        <p class="form-explain">{{$t('bugReport.envirSubtitle')}}</p>
+      </FormItem>
+      <FormItem class="form-title">
+        <p class="form-title-required">{{$t('bugReport.stepTitle')}}</p>
+        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.reSteps"/>
+        <p class="form-explain" v-html="bugI18n.stepSubtitle"></p>
+      </FormItem>
+      <FormItem class="form-title">
+        <p class="form-title-required">{{$t('bugReport.expectedTitle')}}</p>
+        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.expectResult"/>
+      </FormItem>
+      <FormItem class="form-title">
+        <p class="form-title-required">{{$t('bugReport.actualTitle')}}</p>
+        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.actual"/>
+      </FormItem>
+      <FormItem class="form-title">
+        <p class="form-title-required">{{$t('bugReport.extraTitle')}}</p>
+        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.added"/>
+        <p class="form-explain">{{$t('bugReport.extraSubtitle')}}</p>
+      </FormItem>
+    </Form>
+    <router-view/>
+  </div>
+</template>
+
+<script>
+  import marked from 'marked'
+
+  export default {
+    data () {
+      return {
+        version: ['2.1.4', '2.1.3', '2.1.2', '2.1.1', '2.1.0'],
+        bugInfo: {
+          curVersion: '2.1.4',
+          reviewLink: '',
+          environment: '',
+          reSteps: '',
+          expectResult: '',
+          actual: '',
+          added: ''
+        },
+        show: false
+      }
+    },
+    computed: {
+      bugI18n () {
+        return {
+          reSubtitle: marked(this.$t('bugReport.reSubtitle').trim()),
+          stepSubtitle: marked(this.$t('bugReport.stepSubtitle').trim())
+        }
+      },
+      review () {
+        return marked(this.$t('bugReport.reviewModal').trim())
+      }
+    },
+    watch: {
+      bugInfo (val, oldVal) {
+        this.bugInfo = val
+        this.$emit('getInfo', val)
+      }
+    },
+    mounted () {
+      this.$emit('getInfo', this.bugInfo)
+    }
+  }
+</script>
+
+<style lang="less">
+  .bug-report{
+    .version-tit{
+      font-size: 14px;
+      color: rgba(0, 0, 0, .85);
+      margin-bottom: 5px;
+    }
+  }
+  .review a{
+    color: #1890ff;
+    font-size: 15px;
+    font-weight: 500;
+    background-color: transparent;
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+    transition: color .3s;
+  }
+</style>
