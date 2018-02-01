@@ -44,7 +44,7 @@
         <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.actual"/>
       </FormItem>
       <FormItem class="form-title">
-        <p class="form-title-required">{{$t('bugReport.extraTitle')}}</p>
+        <p class="form-title-added">{{$t('bugReport.extraTitle')}}</p>
         <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.added"/>
         <p class="form-explain">{{$t('bugReport.extraSubtitle')}}</p>
       </FormItem>
@@ -101,7 +101,7 @@
 ${curVersion}
 
 ### Reproduction link
-${reviewLink}(${reviewLink})
+[${reviewLink}](${reviewLink})
 
 ### Environment
 ${environment}
@@ -131,12 +131,10 @@ ${added ? `---\n${added}` : ''}`.trim())
 </script>
 
 <style lang="less">
-  .bug-report{
-    .version-tit{
+  .bug-report .version-tit, .form-title-added{
       font-size: 14px;
       color: rgba(0, 0, 0, .85);
       margin-bottom: 5px;
-    }
   }
   .review a{
     color: #1890ff;

@@ -46,10 +46,10 @@
 
     <footer class="layout-footer">
       <p>
-        Built with
-        <a href="https://github.com/vuejs/vue-cli">vue-cli</a>
+        Inspired by
+        <a href="https://new-issue.vuejs.org">Vue Issue Helper</a>
         &centerdot;
-        Check out source on <a href="https://github.com/vuejs/vue-issue">GitHub</a>
+        Check out source on <a href="https://gitlab.oneitfarm.com/ladybird/ui-nuclear">Gitlab</a>
       </p>
     </footer>
   </div>
@@ -180,6 +180,11 @@ export default {
     h3{
       font-size: 20px;
     }
+    pre {
+      padding: 15px 20px;
+      background-color: #f3f3f3;
+      border-radius: 4px;
+    }
   }
   .form-content {
     margin-top: 40px;
@@ -189,5 +194,13 @@ export default {
     color: rgba(0,0,0,.65);
     font-size: 16px;
     text-align: center;
+  }
+  pre {
+    display: block;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 90%;
+    color: #292b2c;
+    background-color: #f3f3f3;
   }
 </style>
