@@ -17,6 +17,8 @@
 
 <script>
   import marked from 'marked'
+  import generate from '../generate'
+
   export default {
     data () {
       return {
@@ -38,6 +40,21 @@
       featureInfo (val, oldVal) {
         this.featureInfo = val
         this.$emit('getInfo', val)
+      }
+    },
+    methods: {
+      generate () {
+        const { resolution, API } = this.featureInfo
+        if (resolution !== '' && API !== '') {
+          return generate(`
+### What problem does this feature solve?
+${resolution}
+
+### What does the proposed API look like?
+${API}`.trim())
+        } else {
+          this.$Message.error('请填写标题前带*的内容')
+        }
       }
     },
     mounted () {

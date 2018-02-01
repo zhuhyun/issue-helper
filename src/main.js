@@ -8,16 +8,18 @@ import '@oneitfarm/ui-nuclear/dist/main.css'
 import VueI18n from 'vue-i18n'
 // import $ from 'jquery'
 import '../node_modules/bootstrap/dist/js/bootstrap.js'
+import I18n from './i18n/plugin'
 
 Vue.use(UiNuclear)
 Vue.use(VueI18n)
+Vue.use(I18n)
 Vue.config.productionTip = false
 
 const i18n = new VueI18n({
   locale: 'zh', // 语言标识
   messages: {
-    'zh': require('./lang/zh/index'),
-    'en': require('./lang/en/index')
+    'zh': require('./i18n/locales/zh/index'),
+    'en': require('./i18n/locales/en/index')
   }
 })
 /* eslint-disable no-new */

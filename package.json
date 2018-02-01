@@ -14,11 +14,13 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "copy-to-clipboard": "^3.0.8",
     "iview": "^2.9.0",
+    "marked": "^0.3.6",
+    "qs": "^6.5.1",
     "vue": "^2.5.2",
     "vue-i18n": "^7.4.1",
-    "vue-router": "^3.0.1",
-    "marked": "^0.3.6"
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "@oneitfarm/ui-nuclear": "^1.0.26",
