@@ -1,18 +1,16 @@
 <template>
-  <div class="feature-request">
-    <Form>
-      <FormItem class="form-title">
-        <p class="form-title-required">{{$t('featureRequest.rationaleTitle')}}</p>
-        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="featureInfo.resolution" />
-        <p class="form-explain" v-html="featureI18n.rational"></p>
-      </FormItem>
-      <FormItem class="form-title">
-        <p class="form-title-required">{{$t('featureRequest.proposalTitle')}}</p>
-        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="featureInfo.API"/>
-        <p class="form-explain" v-html="featureI18n.proposal"></p>
-      </FormItem>
-    </Form>
-  </div>
+  <Form class="feature-request" ref="featureInfo" :model="featureInfo" :rules="ruleValidate">
+    <FormItem class="form-title" prop="resolution" :show-message="false">
+      <p class="form-title-required">{{$t('featureRequest.rationaleTitle')}}</p>
+      <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" v-model="featureInfo.resolution"/>
+      <p class="form-explain" v-html="featureI18n.rational" :class="{'error-msg': isResoNull}"></p>
+    </FormItem>
+    <FormItem class="form-title" prop="API" :show-message="false">
+      <p class="form-title-required">{{$t('featureRequest.proposalTitle')}}</p>
+      <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" v-model="featureInfo.API"/>
+      <p class="form-explain" v-html="featureI18n.proposal" :class="{'error-msg': isApiNull}"></p>
+    </FormItem>
+  </Form>
 </template>
 
 <script>
@@ -25,6 +23,17 @@
         featureInfo: {
           resolution: '',
           API: ''
+        },
+        isResoNull: false,
+        isApiNull: false,
+        ruleValidate: {
+          resolution: [
+            {required: true, trigger: 'change'}
+          ],
+          API: [
+            {required: true, trigger: 'change'}
+
+          ]
         }
       }
     },
@@ -37,9 +46,18 @@
       }
     },
     watch: {
-      featureInfo (val, oldVal) {
-        this.featureInfo = val
-        this.$emit('getInfo', val)
+      featureInfo: {
+        handler (val, oldVal) {
+          this.featureInfo = val
+          if (val.resolution !== '') {
+            this.isResoNull = false
+          }
+          if (val.API !== '') {
+            this.isApiNull = false
+          }
+          this.$emit('getInfo', val)
+        },
+        deep: true
       }
     },
     methods: {
@@ -52,8 +70,17 @@ ${resolution}
 
 ### What does the proposed API look like?
 ${API}`.trim())
-        } else {
-          this.$Message.error('请填写标题前带*的内容')
+        }
+      },
+      handleSubmit () {
+        const name = 'featureInfo'
+        const info = this.featureInfo
+        this.$refs[name].validate()
+        if (info.resolution === '') {
+          this.isResoNull = true
+        }
+        if (info.API === '') {
+          this.isApiNull = true
         }
       }
     },
@@ -64,5 +91,7 @@ ${API}`.trim())
 </script>
 
 <style>
-
+  .error-msg{
+    color: #f5222d
+  }
 </style>

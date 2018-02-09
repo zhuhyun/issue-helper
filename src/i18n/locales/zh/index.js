@@ -16,7 +16,7 @@ module.exports = {
     versionSubtitle: '请检查问题是否存在于最新版本中。',
     reTitle: '重现链接：',
     envir: '环境',
-    envirSubtitle: '系统版本、浏览器版本、 react-native 版本等等信息',
+    envirSubtitle: '系统版本、浏览器版本等等信息',
     stepTitle: '重现步骤',
     stepSubtitle: require('./restep-subtitle.md').default,
     expectedTitle: '期望的结果是什么？：',
@@ -35,5 +35,6 @@ module.exports = {
     proposalSubtitle: require('./proposal-subtitle.md').default
   },
   preview: '预览',
-  previewModal: 'Issue 预览'
+  previewModal: 'Issue 预览',
+  create: '创建'
 }

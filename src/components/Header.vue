@@ -6,8 +6,8 @@
       </a>
       <h1>Issue Helper</h1>
     </div>
-    <div>
-      <button type="button" class="btn-lg" @click="changeLang">{{ $t("langBtn") }}</button>
+    <div class="lang-btn">
+      <Button @click="changeLang" type="ghost" >{{ $t("langBtn") }}</Button>
     </div>
   </nav>
 </template>
@@ -16,8 +16,8 @@
   export default {
     data () {
       return {
-        height: 64,
-        width: 64
+        height: 58,
+        width: 58
       }
     },
     methods: {
@@ -52,33 +52,13 @@
       line-height: 64px;
     }
   }
-  .btn-lg{
-    height: 24px;
-    font-size: 14px;
-    border-radius: 4px;
-    line-height: 1.5;
-    font-weight: 400;
-    text-align: center;
-    cursor: pointer;
-    border: 1px solid #d9d9d9;
-    white-space: nowrap;
-    padding: 0 7px;
-    outline: none;
+  .lang-btn{
     float: right;
-    margin-top: 20px;
-    -webkit-transition: all .3s cubic-bezier(.645,.045,.355,1);
-    -o-transition: all .3s cubic-bezier(.645,.045,.355,1);
-    transition: all .3s cubic-bezier(.645,.045,.355,1);
-    color: rgba(0,0,0,.65);
-    background-color: #fff;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-
-    &:hover{
-      border-color: #1890ff;
-      color: #1890ff;
+    .ivu-btn{
+      height: 26px;
+      font-size: 14px;
+      line-height: 26px;
+      padding: 0 10px
     }
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <i18n id="intro" class="intro paragraph" @click-modal="show = true"></i18n>
+    <i18n id="intro" class="intro" @click-modal="show = true"></i18n>
     <Modal v-model="show" width="720">
       <p slot="header" style="font-size: 20px">
         <span>{{$t('introModalTit')}}</span>

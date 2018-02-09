@@ -1,55 +1,57 @@
 <template>
-  <div class="bug-report">
-    <Row type="flex" justify="space-between">
-      <Col span="11">
-        <p class="version-tit">{{$t('bugReport.version')}}</p>
-        <Select v-model="bugInfo.curVersion" style="width:100%">
-          <Option v-for="item in version" :value="item" :key="item">{{ item }}</Option>
-        </Select>
-        <p class="form-explain">{{$t('bugReport.versionSubtitle')}}</p>
-      </Col>
-      <Col span="11" >
-        <p class="form-title-required">{{$t('bugReport.reTitle')}}</p>
-        <Input v-model="bugInfo.reviewLink" placeholder="Enter something..." />
-        <!--<p class="form-explain" v-html="bugI18n.reSubtitle"></p>-->
-        <i18n id="reSubtitle" @click- ="visible = true"></i18n>
-        <Modal v-model="visible" width="720">
-          <p slot="header" style="font-size: 20px">
-            <span>{{$t('bugReport.modalTitle')}}</span>
-          </p>
-          <!--<div v-html="review" style="font-size: 16px"></div>-->
-          <i18n id="reviewModal" style="font-size: 16px"></i18n>
-          <div slot="footer">
-          </div>
-        </Modal>
-      </Col>
-    </Row>
-    <Form>
-      <FormItem class="form-title">
-        <p class="form-title-required">{{$t('bugReport.envir')}}</p>
-        <Input placeholder="Enter something..." v-model="bugInfo.environment"/>
-        <p class="form-explain">{{$t('bugReport.envirSubtitle')}}</p>
-      </FormItem>
-      <FormItem class="form-title">
-        <p class="form-title-required">{{$t('bugReport.stepTitle')}}</p>
-        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.reSteps"/>
-        <p class="form-explain" v-html="bugI18n.stepSubtitle"></p>
-      </FormItem>
-      <FormItem class="form-title">
-        <p class="form-title-required">{{$t('bugReport.expectedTitle')}}</p>
-        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.expectResult"/>
-      </FormItem>
-      <FormItem class="form-title">
-        <p class="form-title-required">{{$t('bugReport.actualTitle')}}</p>
-        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.actual"/>
-      </FormItem>
-      <FormItem class="form-title">
-        <p class="form-title-added">{{$t('bugReport.extraTitle')}}</p>
-        <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..." v-model="bugInfo.added"/>
-        <p class="form-explain">{{$t('bugReport.extraSubtitle')}}</p>
-      </FormItem>
-    </Form>
-  </div>
+  <Form class="bug-report" ref="bugInfo" :model="bugInfo" :rules="ruleValidate">
+    <FormItem>
+      <Row type="flex" justify="space-between">
+        <Col span="11">
+          <p class="version-tit">{{$t('bugReport.version')}}</p>
+          <FormItem prop="curVersion">
+            <Select v-model="bugInfo.curVersion" style="width:100%">
+              <Option v-for="item in version" :value="item" :key="item">{{ item }}</Option>
+            </Select>
+          </FormItem>
+          <p class="form-explain">{{$t('bugReport.versionSubtitle')}}</p>
+        </Col>
+        <Col span="11" >
+          <p class="form-title-required">{{$t('bugReport.reTitle')}}</p>
+          <FormItem prop="reviewLink" :show-message="false">
+            <Input v-model="bugInfo.reviewLink" />
+          </FormItem>
+          <i18n id="reSubtitle" @click- ="visible = true" class="form-explain" :class="{'error-msg': isReLinkNull}"></i18n>
+          <Modal v-model="visible" width="720">
+            <p slot="header" style="font-size: 20px">
+              <span>{{$t('bugReport.modalTitle')}}</span>
+            </p>
+            <i18n id="reviewModal" style="font-size: 16px"></i18n>
+            <div slot="footer">
+            </div>
+          </Modal>
+        </Col>
+      </Row>
+    </FormItem>
+    <FormItem class="form-title" prop="environment" :show-message="false">
+      <p class="form-title-required">{{$t('bugReport.envir')}}</p>
+      <Input v-model="bugInfo.environment"/>
+      <p class="form-explain" :class="{'error-msg': isEnvirNull}">{{$t('bugReport.envirSubtitle')}}</p>
+    </FormItem>
+    <FormItem class="form-title" prop="reSteps" :show-message="false">
+      <p class="form-title-required">{{$t('bugReport.stepTitle')}}</p>
+      <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" v-model="bugInfo.reSteps"/>
+      <p class="form-explain" v-html="bugI18n.stepSubtitle" :class="{'error-msg': isStepNull}"></p>
+    </FormItem>
+    <FormItem class="form-title" prop="expectResult">
+      <p class="form-title-required">{{$t('bugReport.expectedTitle')}}</p>
+      <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" v-model="bugInfo.expectResult"/>
+    </FormItem>
+    <FormItem class="form-title" prop="actual">
+      <p class="form-title-required">{{$t('bugReport.actualTitle')}}</p>
+      <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" v-model="bugInfo.actual"/>
+    </FormItem>
+    <FormItem class="form-title" prop="added">
+      <p class="form-title-added">{{$t('bugReport.extraTitle')}}</p>
+      <Input type="textarea" :autosize="{minRows: 2,maxRows: 5}" v-model="bugInfo.added"/>
+      <p class="form-explain">{{$t('bugReport.extraSubtitle')}}</p>
+    </FormItem>
+  </Form>
 </template>
 
 <script>
@@ -71,56 +73,99 @@
           actual: '',
           added: ''
         },
-        visible: false
+        visible: false,
+        isReLinkNull: false,
+        isEnvirNull: false,
+        isStepNull: false,
+        ruleValidate: {
+          reviewLink: [
+            {required: true, trigger: 'change'}
+          ],
+          environment: [
+            {required: true, trigger: 'change'}
+
+          ],
+          reSteps: [
+            {required: true, trigger: 'change'}
+          ],
+          expectResult: [
+            {required: true, message: 'expected is required', trigger: 'change'}
+          ],
+          actual: [
+            {required: true, message: 'actual is required', trigger: 'change'}
+          ]
+        }
       }
     },
     computed: {
       bugI18n () {
         return {
-          reSubtitle: marked(this.$t('bugReport.reSubtitle').trim()),
+          reSubtitle: marked(this.$t('reSubtitle').trim()),
           stepSubtitle: marked(this.$t('bugReport.stepSubtitle').trim())
         }
-      },
-      review () {
-        return marked(this.$t('bugReport.reviewModal').trim())
       }
     },
     watch: {
-      bugInfo (val, oldVal) {
-        this.bugInfo = val
-        this.$emit('getInfo', val)
+      bugInfo: {
+        handler (val, oldVal) {
+          this.bugInfo = val
+          this.$emit('getInfo', this.bugInfo)
+          if (val.reviewLink !== '') {
+            this.isReLinkNull = false
+          }
+          if (val.environment !== '') {
+            this.isEnvirNull = false
+          }
+          if (val.reSteps !== '') {
+            this.isStepNull = false
+          }
+        },
+        deep: true
       }
+
     },
     methods: {
       generate () {
-        const {curVersion, reviewLink, environment, reSteps, expectResult, actual, added} = this.bugInfo
-        if (reviewLink !== '' && environment !== '' && reSteps !== '' && expectResult !== '' && actual !== '') {
-          if (re.test(reviewLink)) {
+        const info = this.bugInfo
+        if (info.reviewLink !== '' && info.environment !== '' && info.reSteps !== '' && info.expectResult !== '' && info.actual !== '') {
+          if (re.test(info.reviewLink)) {
             return generate(`
 ### Version
-${curVersion}
+${info.curVersion}
 
 ### Reproduction link
-[${reviewLink}](${reviewLink})
+[${info.reviewLink}](${info.reviewLink})
 
 ### Environment
-${environment}
+${info.environment}
 
 ### Steps to reproduce
-${reSteps}
+${info.reSteps}
 
 ### What is expected?
-${expectResult}
+${info.expectResult}
 
 ### What is actually happening?
-${actual}
+${info.actual}
 
-${added ? `---\n${added}` : ''}`.trim())
+${info.added ? `---\n${info.added}` : ''}`.trim())
           } else {
             this.$Message.error('请填写正确的网址')
           }
-        } else {
-          this.$Message.error('请填写标题前带*的内容')
+        }
+      },
+      handleSubmit () {
+        const name = 'bugInfo'
+        const info = this.bugInfo
+        this.$refs[name].validate()
+        if (info.reviewLink === '') {
+          this.isReLinkNull = true
+        }
+        if (info.environment === '') {
+          this.isEnvirNull = true
+        }
+        if (info.reSteps === '') {
+          this.isStepNull = true
         }
       }
     },
@@ -136,14 +181,7 @@ ${added ? `---\n${added}` : ''}`.trim())
       color: rgba(0, 0, 0, .85);
       margin-bottom: 5px;
   }
-  .review a{
-    color: #1890ff;
-    font-size: 15px;
-    font-weight: 500;
-    background-color: transparent;
-    text-decoration: none;
-    outline: none;
-    cursor: pointer;
-    transition: color .3s;
+  .error-msg{
+    color: #f5222d
   }
 </style>

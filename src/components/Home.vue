@@ -14,8 +14,8 @@
             </Col>
             <Col span="11">
             <p>{{$t('typeTitle')}}</p>
-            <Select v-model="issueType" style="width:100%">
-              <Option v-for="item in contList" :value="item" :key="item">{{ item }}</Option>
+            <Select v-model="type" style="width:100%">
+              <Option v-for="item in issueType" :value="item.id" :key="item.name">{{ item.name }}</Option>
             </Select>
             </Col>
           </Row>
@@ -25,11 +25,11 @@
         </div>
         <div class="form-title">
           <div class="form-title-required"><span>{{$t('title')}}</span></div>
-          <Input v-model="model3" placeholder="Enter something..."/>
+          <Input v-model="formTit" ref="formTit" :class="{'has-error': notNull}"/>
+          <p class="form-explain" v-if="notNull" style="color: #f5222d">title is required</p>
         </div>
         <div class="form-content">
-          <BugReport v-if="type" @getInfo="getBugInfo" ref="content"/>
-          <FeatureRequest v-else @getInfo="getFeaInfo" ref="content"/>
+          <component :is="type" ref="content" @getInfo="getInfo"></component>
         </div>
         <div class="preview-btn">
           <Button type="primary" size="large" @click="previewInfo">{{$t('preview')}}</Button>
@@ -37,7 +37,7 @@
             <p slot="header" style="font-size: 20px">{{$t('previewModal')}}</p>
             <div v-html="modalInfo.html" class="info-content"></div>
             <div slot="footer">
-              <Button type="primary" size="large"  @click="">Create</Button>
+              <Button type="primary" size="large"  @click="">{{$t('create')}}</Button>
             </div>
           </Modal>
         </div>
@@ -49,7 +49,7 @@
         Inspired by
         <a href="https://new-issue.vuejs.org">Vue Issue Helper</a>
         &centerdot;
-        Check out source on <a href="https://gitlab.oneitfarm.com/ladybird/ui-nuclear">Gitlab</a>
+        Check out source on <a href="https://gitlab.oneitfarm.com/ladybird/issue-helper">Gitlab</a>
       </p>
     </footer>
   </div>
@@ -73,51 +73,58 @@ export default {
   data () {
     return {
       theme: 'ui-nuclear',
-      model3: '',
+      formTit: '',
       themeList: ['ui-nuclear', 'iview'],
       bugInfo: null,
       featureInfo: null,
       show: false,
       modalInfo: {},
-      type: true
+      type: 'BugReport',
+      notNull: false
     }
   },
   computed: {
     intro18n () {
       return marked(this.$t('intro').trim())
     },
-    contList () {
-      return [this.$t('bugReport.name'), this.$t('featureRequest.name')]
-    },
-    issueType: {
-      get () {
-        return this.type ? this.$t('bugReport.name') : this.$t('featureRequest.name')
-      },
-      set (value) {
-        this.type = value === this.$t('bugReport.name')
-        console.log(value)
+    issueType () {
+      return [
+        { id: 'BugReport', name: this.$t('bugReport.name') },
+        { id: 'FeatureRequest', name: this.$t('featureRequest.name') }
+      ]
+      // get () {
+      //   return this.type === this.$t('bugReport.name') ? this.$t('bugReport.name') : this.$t('featureRequest.name')
+      // },
+      // set (value) {
+      //   this.type = value
+      // }
+    }
+  },
+  watch: {
+    formTit (val) {
+      if (val) {
+        this.notNull = false
       }
     }
-    // type () {
-    //   return this.issueType === this.$t('bugReport.name')
-    // }
   },
   methods: {
-    getBugInfo (value) {
+    getInfo (value) {
       this.bugInfo = value
-    },
-    getFeaInfo (value) {
-      this.featureInfo = value
     },
     previewInfo () {
       const info = this.$refs.content.generate()
-      if (info) {
+      this.$refs.content.handleSubmit()
+      if (this.formTit === '') {
+        this.notNull = true
+      }
+      if (info && this.formTit) {
         this.show = true
         this.modalInfo = info
       }
+      console.log(info.markdown)
     }
   },
-  created () {
+  mounted () {
   }
 }
 </script>
@@ -126,6 +133,20 @@ export default {
   .layout-wrap {
     width: 100%;
     background: #f0f2f5;
+    a{
+      color: #1890ff;
+      font-size: 14px;
+      font-weight: 500;
+      background-color: transparent;
+      text-decoration: none;
+      outline: none;
+      cursor: pointer;
+      transition: color .3s;
+      &:hover{
+        outline: none;
+        opacity: 0.8;
+      }
+    }
   }
   .layout-content-wrap{
     width: 100%;
@@ -202,5 +223,21 @@ export default {
     font-size: 90%;
     color: #292b2c;
     background-color: #f3f3f3;
+  }
+  .has-error{
+    .ivu-input{
+      border-color: #f5222d;
+    }
+    .ivu-input:focus{
+      border-color: #f5222d;
+      box-shadow: 0 0 0 2px rgba(245,34,45,.2)
+    }
+    .ivu-input:hover{
+      border-color: #f5222d;
+    }
+  }
+  .ivu-form-item-error-tip{
+    font-size: 14px;
+    font-weight: 500;
   }
 </style>

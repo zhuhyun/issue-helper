@@ -16,7 +16,7 @@ module.exports = {
     versionSubtitle: 'Check if the issue is reproducible with the latest stable version.',
     reTitle: 'Link to minimal reproduction:',
     envir: 'Environment:',
-    envirSubtitle: 'os version, browser version, react-native version...',
+    envirSubtitle: 'os version, browser version...',
     stepTitle: 'Step to reproduce:',
     stepSubtitle: require('./restep-subtitle.md').default,
     expectedTitle: 'What is expected?:',
@@ -35,5 +35,6 @@ module.exports = {
     proposalSubtitle: require('./proposal-subtitle.md').default
   },
   preview: 'Preview',
-  previewModal: 'Preview Issue'
+  previewModal: 'Preview Issue',
+  create: 'Create'
 }
